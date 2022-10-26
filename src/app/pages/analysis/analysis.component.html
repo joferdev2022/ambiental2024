@@ -1,0 +1,73 @@
+
+    <!-- <div *ngFor="let item of chemicalsSelected">
+        <h1>{{ item }}</h1>
+    </div> -->
+<div class="row">
+    <span>El número de pruebas seleccionadas es {{ chemicalsSelected.length }}.</span>
+</div>
+<mat-accordion>
+    <mat-expansion-panel [expanded]="true" class="">
+        <mat-expansion-panel-header>
+            <mat-panel-title class="panel-title mt-0 text-justify">PRUEBAS</mat-panel-title>
+    </mat-expansion-panel-header>
+    <form [formGroup]="selectForm">
+        <div class="row">
+            <div class="col-4" *ngFor="let item of chemicalsSelected">
+                <!-- <mat-checkbox class="example-margin">
+                {{ item }}
+                </mat-checkbox> -->
+                <!-- <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>{{ item }}:</mat-label>
+                    <mat-select>
+                      <mat-option>None</mat-option>
+                      <mat-option value="state">CUSCO</mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+                <mat-form-field appearance="legacy" color="primary">
+                    <mat-label>{{ item }}</mat-label>
+                    <mat-select formArrayName="pruebas" [required]="true" (selectionChange)="onChangeEventFunc($event.value, item)">
+                      <mat-option *ngFor="let opcion of opcionTypes" [value]="opcion.label">
+                       {{opcion.label}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+            </div>
+        </div>
+    </form>
+    <!-- <div class="row">
+        <form [formGroup]="checkForm">
+            <div class="col-4" *ngFor="let item of chemicals">
+                <mat-checkbox class="example-margin" (change)="onChangeEventFunc(item.name, $event)">
+                {{ item.name }}
+                </mat-checkbox>
+            </div>
+        </form>
+    </div>     -->
+    </mat-expansion-panel>
+</mat-accordion>
+
+<div class="mt-4 text-center">
+    <!-- <button type="button" mat-flat-button class="btn btn-lg" (click)="onSearch()">Continuar</button> -->
+    <button type="button" class="btn btn-success" (click)="onSearch()">Analizar</button>
+</div>
+<hr>
+<div *ngIf="alerta && imprimirRespuesta.length === 0" class="alert alert-danger" role="alert">
+    No se encontro ningun resultado
+</div>
+<div *ngFor="let item of imprimirRespuesta" class="row">
+    <div class="col-5 ">{{ item.bacteria }}</div>
+    <div class="col-6 align-top">
+        <mat-slider class="full-width" [value]="item.coincidencia"   aria-label="unit(s)"></mat-slider>
+    </div>
+    <div class="col-1">{{item.coincidencia | number }}</div>
+    <!-- <div class="col-6 progress">
+        <div class="progress-bar" role="progressbar" color="warn" [style.width]="item.coincidencia | percent" aria-valuenow="item.coincidencia" aria-valuemin="0" aria-valuemax="100">{{ item.coincidencia | percent}}</div>
+    </div> -->
+</div>
+<hr>
+
+<div class="mt-4 text-center">
+    <!-- <button type="button" mat-flat-button class="btn btn-lg" (click)="onSearch()">Continuar</button> -->
+    <button type="button" class="btn btn-success" (click)="onMediums()">Agregar Medios</button>
+    <button type="button" class="btn btn-success" (click)="onResults()">Finalizar</button>
+</div>

@@ -1,1 +1,145 @@
-<p>register works!</p>
+
+<h1 class="text-center">Prueba: 001</h1>
+<form *ngIf="labForm" role="form" novalidate [formGroup]="labForm" class="d-block">
+    <mat-accordion class="example-headers-align" multi>
+        <mat-expansion-panel [expanded]="true" class="">
+            <mat-expansion-panel-header>
+                <mat-panel-title class="panel-title mt-0 text-justify">DATOS DEL ENCARGADO</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="row">
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>Nombre</mat-label>
+                      <input matInput type="text" formControlName="managerName"
+                             placeholder="ingrese nombre del encargado" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                  </div>
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>Apellidos</mat-label>
+                      <input matInput type="text" formControlName="managerLastName"
+                             placeholder="ingrese apellido del encargado" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                  </div>
+            </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel [expanded]="false" class="">
+            <mat-expansion-panel-header>
+                <mat-panel-title class="panel-title mt-0 text-justify">DATOS DEL CLIENTE</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="row">
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>DNI:</mat-label>
+                      <input matInput type="number" formControlName="clientDni"
+                             placeholder="ingrese nombre del encargado" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                </div>
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>Nombres:</mat-label>
+                      <input matInput type="text" formControlName="clientName"
+                             placeholder="ingrese apellido del encargado" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                </div>
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>Apellidos:</mat-label>
+                      <input matInput type="text" formControlName="clientLastName"
+                             placeholder="ingrese nombre del encargado" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                </div>
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>Institución:</mat-label>
+                      <input matInput type="text" formControlName="clientInstitution"
+                             placeholder="ingrese apellido del encargado" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <mat-form-field appearance="legacy" class="example-form-field full-width">
+                        <mat-label>Elige una fecha</mat-label>
+                        <input matInput [matDatepicker]="datepicker1" formControlName="startDate">
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matSuffix [for]="datepicker1"></mat-datepicker-toggle>
+                        <mat-datepicker #datepicker1>
+                          <mat-datepicker-actions>
+                            <button mat-button matDatepickerCancel>Cancel</button>
+                            <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                          </mat-datepicker-actions>
+                        </mat-datepicker>
+                      </mat-form-field>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <mat-form-field appearance="legacy" class="example-form-field full-width">
+                        <mat-label>Elige una fecha</mat-label>
+                        <input matInput [matDatepicker]="datepicker2" formControlName="endDate">
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matSuffix [for]="datepicker2"></mat-datepicker-toggle>
+                        <mat-datepicker #datepicker2>
+                          <mat-datepicker-actions>
+                            <button mat-button matDatepickerCancel>Cancel</button>
+                            <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                          </mat-datepicker-actions>
+                        </mat-datepicker>
+                      </mat-form-field>
+                </div>
+
+
+                  
+            </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel [expanded]="false" class="">
+            <mat-expansion-panel-header>
+                <mat-panel-title class="panel-title mt-0 text-justify">DATOS DE LA MUESTRA</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="row">
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>Tipo:</mat-label>
+                      <input matInput type="text" formControlName="typeItem"
+                             placeholder="ingrese el tipo de la muestra" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                  </div>
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy">
+                        <mat-label>Departamento:</mat-label>
+                        <mat-select formControlName="departmentItem"  [required]="true">
+                          <mat-option>None</mat-option>
+                          <mat-option value="state">CUSCO</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-6">
+                    <mat-form-field  class="full-width" appearance="legacy">
+                        <mat-label>Provincia:</mat-label>
+                        <mat-select formControlName="provinceItem"  [required]="true">
+                          <mat-option>None</mat-option>
+                          <mat-option value="state">CUSCO</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                  </div>
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy">
+                        <mat-label>Distrito:</mat-label>
+                        <mat-select formControlName="districtItem"  [required]="true">
+                          <mat-option>None</mat-option>
+                          <mat-option value="state">CUSCO</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                </div>
+                <div class="col-6">
+                    <mat-form-field class="full-width" appearance="legacy" color="primary">
+                      <mat-label>Referencia:</mat-label>
+                      <input matInput type="text" formControlName="ReferenceItem"
+                             placeholder="ingrese una referencia del lugar de procedencia de la muestra" [required]="true" autocomplete="off">
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</form>
+<div class="mt-4 text-center">
+    <!-- <button type="button" mat-flat-button class="btn btn-lg" (click)="onSearch()">Continuar</button> -->
+    <button type="button" class="btn btn-success" (click)="onSearch()">Continuar</button>
+</div>

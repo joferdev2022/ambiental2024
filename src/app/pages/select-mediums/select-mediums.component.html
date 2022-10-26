@@ -1,0 +1,73 @@
+<!-- <form>
+    <mat-accordion>
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title class="panel-title mt-0 text-justify">SELECCIONE los medios de cultivo</mat-panel-title>
+        </mat-expansion-panel-header>
+        <form [formGroup]="checkForm">
+            <div class="row">
+                <div class="col-4" *ngFor="let item of mediums">
+                    <mat-checkbox class="example-margin" (change)="onChangeEventFunc(item.name, $event)">
+                    {{ item.name }}
+                    </mat-checkbox>
+                </div>
+            </div>
+        </form>  
+        </mat-expansion-panel>
+    </mat-accordion>
+</form> -->
+<div class="container">
+    <h1>Seleccione los Medios a usar en las pruebas</h1>
+    <form *ngIf="mediumsForm" [formGroup]="mediumsForm">
+        <div class="col-6 text-center">
+            <button type="button" mat-stroked-button color="warn" class="btn btn-block mb-3 add" (click)="addMedium()">
+                Agregar muestra
+            </button>
+            <button type="button" mat-stroked-button color="warn" class="btn btn-block mb-3 close"
+                (click)="removeMedium()">
+                Quitar muestra
+            </button>
+        </div>
+        <div class="row" formArrayName="aliases">
+            <div *ngFor="let itemList of aliases.controls; let i=index" class="col-6">
+                <div [formGroupName]="i" class="div">
+                    <mat-form-field class="" appearance="legacy">
+                        <mat-label>Medios:</mat-label>
+                        <mat-select formControlName="medio" [required]="true">
+                            <!-- {id: 0, name : 'osso'} === {id:0, name: 'osso', tests: []} -->
+                            <mat-option *ngFor="let item of mediums" [value]="item.id">{{ item.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    -
+                    <input type="text" formControlName="subName">
+                </div>
+            </div>
+        </div>
+    </form>
+    <hr>
+    <br>
+
+    <div *ngIf="this.mediumsSelected.length" class="container h-100">
+        <div class="row" *ngFor="let item of this.mediumsSelected">
+            <!-- <div class="col-8">{{item.medio.name}}</div>
+            <div *ngIf="item.medio.name" class="col-4">
+               
+                <button type="button" class="btn btn-warning" (click)="onNext(item.medio.name)">Editar</button>
+            </div> -->
+
+            <div class="col-8">
+                {{item.name}} - ID: {{item.uid}}
+
+            </div>
+            <div *ngIf="item.name" class="col-4">
+
+                <button type="button" class="btn btn-warning" (click)="onNext(item.name)">Editar</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="mt-4 text-center">
+        <!-- <button type="button" mat-flat-button class="btn btn-lg" (click)="onSearch()">Continuar</button> -->
+        <!-- <button type="button" class="btn btn-success" (click)="onNext()">Continuar</button> -->
+    </div>
+</div>
