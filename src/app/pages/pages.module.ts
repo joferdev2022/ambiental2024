@@ -28,6 +28,7 @@ import { SelectMediumsComponent } from './select-mediums/select-mediums.componen
 
 
 
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -64,6 +65,8 @@ import { SelectMediumsComponent } from './select-mediums/select-mediums.componen
     MatTableModule,
     FormsModule
 
-  ]
+  ],
+
+  providers: [ MatDatepickerModule ],
 })
 export class PagesModule { }

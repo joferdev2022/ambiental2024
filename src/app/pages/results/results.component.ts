@@ -3,6 +3,9 @@ import { LabModel } from 'src/app/models/labModel';
 import { DataService } from 'src/app/shared/services/data.service';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { Medio } from 'src/app/models/medioModel';
+import { Constants } from 'src/app/utils/constants';
+import * as moment from 'moment';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -14,40 +17,96 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export class ResultsComponent implements OnInit {
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  columns:any = [];
+  columns: any = [];
   data: Array<LabModel> = [];
-  arrayMediums = [];
-  headerTable = ['Prueba Bioquimica'] 
+  dictMedios = {};
+  headerTable = ['Prueba Bioquimica'];
+  logo1 = Constants.LOGO1;
+  logo2 = Constants.LOGO2;
+  actualDate: string = '';
+  listaTests: any = '';
 
   constructor(private dataService: DataService) {
-   
-   
-    this.arrayMediums = this.dataService.mediums;
-    console.log(this.arrayMediums);
+    this.dictMedios = this.dataService.medios;
+    const date = moment();
     
-   }
+   this.actualDate = date.locale("es").format('D [de] MMMM [del] YYYY');
+  }
 
   ngOnInit(): void {
     console.log(this.data);
     this.dataService.labData
     this.tableRules();
-    this.crearHeaders();
   }
 
-  crearHeaders() {
-    for (let index = 0; index < this.arrayMediums.length; index++) {
-      this.headerTable.push(this.arrayMediums[index].medio.name);
+  listTests() {
+ 
+    this.dataService.listTests().subscribe(resp => {
       
-    }
-    console.log(this.headerTable);
+      this.listaTests = resp;
+    })
+
+  }
+  
+  getHeaders() {
+    const headers = ["Prueba bioquimica"];
+
+    Object.values(this.dictMedios).forEach((medio: Medio) => {
+      headers.push(`${medio.name}(${medio.subName})`);
+    })
+
+    return headers;
+
   }
 
-  getBodyTable () {
+  getBodyResults() {
+
+    let body = [];
+
+    Object.values(this.dictMedios).forEach((medio: Medio) => {
+      const fila = [`${medio.name}(${medio.subName})`];
+
+      const resultados: { bacteria: string, coincidencia: string }[] = medio.resultado
+
+      const nombres = resultados.map((resultado) => resultado.bacteria).join(", ");
+      fila.push(nombres);
+
+      const primerResultado = resultados[0];
+
+      fila.push(primerResultado.coincidencia)
+      
+      body.push(fila);
+    })
+    console.log(body);
+    
+    return body;
+  }
+
+
+  getBodyTable() {
+    let totalTests = [];
+
+    Object.values(this.dictMedios).forEach((medio: Medio) => {
+      totalTests.push(...Object.keys(medio.test))
+    })
+
+    totalTests = [...new Set(totalTests)];
 
     const body = [];
 
-    this.dataService.paraPdf.tests.forEach(test => {
-      body.push([test.testName, test.testResult]);
+    totalTests.forEach(prueba => {
+      const fila = [prueba];
+      Object.values(this.dictMedios).forEach((medio: Medio) => {
+        if(!medio.test?.[prueba]) {
+          fila.push('vacio');
+        } else if(medio.test?.[prueba] == 'POSITIVO') {
+          fila.push('+');
+        } else if (medio.test?.[prueba] == 'NEGATIVO') {
+          fila.push('-')
+        }
+        // fila.push(medio.test?.[prueba] || 'No tiene xd');
+      })
+      body.push(fila)
     })
 
     return body;
@@ -55,7 +114,7 @@ export class ResultsComponent implements OnInit {
 
   crearPdf() {
 
-    const pdfDefinition: any  = {
+    const pdfDefinition: any = {
       content: [
         {
           columns: [
@@ -86,7 +145,9 @@ export class ResultsComponent implements OnInit {
                   style: 'header',
                   alignment: 'center'
                 },
-                      ]
+              ],
+              color: "#757575",
+              width: "*",
             },
             {
               image: 'logo2',
@@ -103,85 +164,70 @@ export class ResultsComponent implements OnInit {
               alignment: 'justify',
               stack: [
                 {
-                  text: `Muestra: ${ this.dataService.labData.typeItem}`,
-                  margin: [2,2],
-                  
+                  text: `Muestra: ${this.dataService.labData.typeItem}`,
+                  margin: [2, 2],
+
                 },
                 {
-                  text: `Procedencia: ${ this.dataService.labData.districtItem} - ${ this.dataService.labData.clientInstitution}`,
-                  margin: [2,2],
-                  
+                  text: `Procedencia: ${this.dataService.labData.districtItem} - ${this.dataService.labData.clientInstitution}`,
+                  margin: [2, 2],
+
                 },
                 {
-                  text: `Solicitante: ${ this.dataService.labData.clientName} ${ this.dataService.labData.clientLastName}`,
-                  margin: [2,2],
+                  text: `Solicitante: ${this.dataService.labData.clientName} ${this.dataService.labData.clientLastName}`,
+                  margin: [2, 2],
                 },
                 {
                   text: 'Analisis solicitados:',
-                  margin: [2,2],
+                  margin: [2, 2],
                 },
               ]
             },
             {
-              text: `Fecha de recepción: ${ this.dataService.labData.startDate}`,
+              text: `Fecha de recepción: ${this.dataService.labData.startDate}`,
               alignment: 'justify',
             }
           ]
         },
         {
+          alignment: "center",
           margin: [0, 5, 0, 15],
           table: {
+            alignment: "justify",
+            widths : 'auto',
             body: [
-              this.headerTable,
+              this.getHeaders(),
               ...this.getBodyTable(),
             ]
           }
         },
         {
           alignment: 'center',
-          margin: 7,
-          columns: [
-            {
-              stack: [
-                {
-                  text: 'Resultado'
-                },
-                {
-                  type: 'none',
-                  ul: [
-                    'item 1',
-                    'item 2',
-                    'item 3',
-                  ]
-                }
-              ]
-            },
-            {
-              stack: [
-                {
-                  text: 'Efectividad de reconocimiento'
-                },
-                {
-                  type: 'none',
-                  ul: [
-                    'item 1',
-                    'item 2',
-                    'item 3',
-                  ]
-                }
-              ]
-            }
-          ]
+          margin: [0, 5, 0, 15],
+          table: {
+            widths: [100, '*', 100],
+            body: [
+              ['Resultado', '         ', 'Efectividad de reconocimiento'],
+              ...this.getBodyResults()
+            ],
+          },
+          layout: 'noBorders'
+        },
+        {
+          text: `Tingo María, ${this.actualDate}` ,
+          // style: 'header',
+          alignment: 'left'
+        },
+        {
+          text: this.actualDate,
+          // style: 'header',
+          alignment: 'right'
         }
       ],
       images: {
         // is supported loading images via url with custom headers (minimal version: 0.2.5)
-        logo1: {
-          url: 'https://picsum.photos/id/1/200/300',
-        },
-        logo2: {
-          url: 'https://picsum.photos/seed/picsum/200/300',
-        },
+        logo1: this.logo1,
+        logo2: this.logo2
       },
       styles: {
         tableExample: {
@@ -199,26 +245,40 @@ export class ResultsComponent implements OnInit {
       {
         columnDef: 'position',
         header: 'No.',
-        cell: (element: LabModel) => `${element.clientDni}`,
+        cell: (element: LabModel) => `${element.ReferenceItem}`,
       },
       {
         columnDef: 'name',
-        header: 'Name',
+        header: 'Nombres',
         cell: (element: LabModel) => `${element.clientName}`,
       },
       {
-        columnDef: 'weight',
-        header: 'Weight',
+        columnDef: 'lastName',
+        header: 'Apellidos',
         cell: (element: LabModel) => `${element.clientLastName}`,
       },
       {
-        columnDef: 'symbol',
-        header: 'Symbol',
-        cell: (element: LabModel) => `${element.managerName}`,
+        columnDef: 'state',
+        header: 'Estado',
+        cell: (element: LabModel) => `${element.state}`,
+      },
+      {
+        columnDef: 'institution',
+        header: 'Institución',
+        cell: (element: LabModel) => `${element.clientInstitution}`,
+      },
+      {
+        columnDef: 'startDate',
+        header: 'Fecha de inicio',
+        cell: (element: LabModel) => `${element.startDate}`,
+      },
+      {
+        columnDef: 'actions',
+        header: 'Acciones',
       },
     ];
     this.data = this.data;
     this.displayedColumns = this.columns.map((c: any) => c.columnDef);
   }
-  
+
 }

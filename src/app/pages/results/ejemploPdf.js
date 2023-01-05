@@ -91,3 +91,8 @@ content: [
         ],
     },
 ]
+
+// images: {
+//     americana:
+//         "data:image/jpeg;base64,/9j/4...",
+// },

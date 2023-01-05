@@ -1,4 +1,4 @@
-import { checkBox } from "../models/checkBox";
+import { checkBox } from "../models/checkBox.model";
 import { SelectModel } from "../models/selectModel";
 
 export class Default {

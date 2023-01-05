@@ -1,4 +1,3 @@
-
 export class LabModel {
     managerName: string = '';
     managerLastName: string = '';
@@ -13,8 +12,9 @@ export class LabModel {
     provinceItem: string = '';
     districtItem: string = '';
     ReferenceItem: string = '';
+    state?: string = '';
 
-
+    
     static createFromObject(obj: any): LabModel {
         const newObj = new LabModel();
         newObj.managerName = obj.managerName;
@@ -23,8 +23,8 @@ export class LabModel {
         newObj.clientName = obj.clientName;
         newObj.clientLastName = obj.clientLastName;
         newObj.clientInstitution = obj.clientInstitution;
-        newObj.startDate = obj.startDate;
-        newObj.endDate = obj.endDate;
+        newObj.startDate = obj.startDate.toString();
+        newObj.endDate = obj.endDate.toString();
         newObj.typeItem = obj.typeItem;
         newObj.departmentItem = obj.departmentItem;
         newObj.provinceItem = obj.provinceItem;

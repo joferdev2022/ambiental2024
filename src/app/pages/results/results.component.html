@@ -1,18 +1,24 @@
-<table mat-table [dataSource]="data" class="mat-elevation-z8 full-width">
-  <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
-    <th mat-header-cell *matHeaderCellDef>
-      {{column.header}}
-    </th>
-    <td mat-cell *matCellDef="let row">
-      {{column.cell(row)}}
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<div class="text-center mt-4">
-
-  <button class="btn btn-warning" (click)="crearPdf()">VER PDF</button>
+<div class="container">
+  <h1>
+    <i class="fa-solid fa-clipboard-list"></i>
+        Análisis Realizados
+  </h1>
+  <table mat-table [dataSource]="data" class="mat-elevation-z8 full-width">
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+      <th mat-header-cell *matHeaderCellDef>
+        {{column.header}}
+      </th>
+      <td mat-cell *matCellDef="let row">
+        {{column.cell(row)}}
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  
+  <div class="text-center mt-4">
+  
+    <button class="btn btn-success btn-bio" (click)="crearPdf()">VER PDF</button>
+  </div>
 </div>

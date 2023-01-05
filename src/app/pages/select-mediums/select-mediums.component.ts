@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { checkBox } from 'src/app/models/checkBox';
+import { checkBox } from 'src/app/models/checkBox.model';
+import { Medio } from 'src/app/models/medioModel';
 import { MediumObject } from 'src/app/models/mediumObject';
 import { DataService } from 'src/app/shared/services/data.service';
 import { Default } from 'src/app/utils/default';
@@ -16,9 +17,11 @@ import { Default } from 'src/app/utils/default';
 export class SelectMediumsComponent implements OnInit {
 
   mediums: Array<checkBox> = Default.mediums;
+  dictMedios: { [key: number]: Medio } = {}
+
   arrayMedium!: Array<checkBox>;
-  arrayMediums2!: Array<MediumObject>;
-  
+  arrayMediums2!: { [key: number]: Medio };
+
   mediumsForm!: FormGroup;
   mediumsNumber: number = 0;
   nombreModificado = '';
@@ -28,183 +31,95 @@ export class SelectMediumsComponent implements OnInit {
     private dataService: DataService) {
 
     // this.arrayMedium = dataService.mediums ?  dataService.mediums : [];
-    this.arrayMediums2 = dataService.mediums2 || [];
-    console.log(this.arrayMediums2);
-
-
+    this.arrayMediums2 = dataService.medios || [];
+    // console.log(this.arrayMediums2);
   }
 
-  get mediumsSelected(): Array<checkBox> {
+  get mediumsSelected(): Array<any> {
+    const selected = [];
+    const dictMedios = this.dataService.medios;
 
-    const mediums: Array<any> = this.aliases.value.filter(item => item.medio !== '');
-
-    const mediumsSelected = [];
-
-    // podría ser usar un objeto con el id como key
-    mediums.forEach(medium => {
-      const medioEncontrado = this.mediums.find(medio => medio.id == medium.medio);
-      if (medioEncontrado) {
-        mediumsSelected.push({ ...medioEncontrado, uid: medium.uid, subName: medium.subName })
-      }
+    Object.keys(dictMedios).forEach(uid => {
+      const medio: Medio = dictMedios[uid];
+      selected.push(medio);
     })
-
-    console.log("mediumsSelected", mediumsSelected);
-
-
-    return mediumsSelected;
+    return selected;
   }
 
   ngOnInit(): void {
-
-    // console.log(this.dataService.labData);
-    // console.log("this.dataService.mediums2", this.dataService.mediums2);
-
     this.createSelectForm();
-    console.log(this.mediumsSelected);
-
   }
-
-  // private createSelectForm() {
-  //   this.mediumsForm = this.formBuilder.group({
-  //     aliases: this.formBuilder.array(
-  //       [ (this.formBuilder.control('') )]
-  //       // this.arrayMedium.map( medio => this.formBuilder.control(''))
-  //       ) 
-  //   });
-  // }
   private createSelectForm() {
     this.mediumsForm = this.formBuilder.group({
       aliases: this.formBuilder.array(
-        [this.newMediumForm2()]
+        [this.newMediumForm({})]
       )
     });
     this.dataForm();
 
   }
-
-  // newMediumForm(item?: any): FormGroup {
-  //   // console.log(item);
-  //   return this.formBuilder.group({
-  //     uid: (new Date).getTime(),
-  //     medio: new FormControl(item ? item.medio : ''),
-  //     subName: new FormControl(''),
-  //   });
-  // }
-
-  newMediumForm2(item?: MediumObject): FormGroup {
-    // console.log(item);
+  newMediumForm({ uid = null, item = null }): FormGroup {
     return this.formBuilder.group({
-      medio: new FormControl(item ? item.id : ''),
-      subName: new FormControl(item ? item.nameEdit : ''),
-      uid: item ? item.uid : (new Date).getTime(),
+      medioId: new FormControl(item ? item.id : ''),
+      subName: new FormControl(item ? item.subName : ''),
+      uid,
     });
   }
-
-  // public mediumValues(index: number, medio: any) {
-  //   this.aliases.at(index).get('medio')?.setValue(medio ? medio : '');
-
-  // }
 
   get aliases(): FormArray {
     return this.mediumsForm.get('aliases') as FormArray;
   };
 
   dataForm() {
-
-    // while (this.aliases.length) {
-    //   this.aliases.removeAt(0);
-    // }
-
-    // if (this.dataService.mediumNumber > 0) {
-    //   for (let i = 1; i <= this.dataService.mediumNumber; i++) {
-    //     this.aliases.push(this.newMediumForm(this.dataService.mediums[i - 1]));
-    //     console.log('entro aqui');
-    //     // this.mediumValues(i, this.dataService.mediums[i-1]);
-    //   }
-    // }
-
     this.aliases.clear();
 
-    // if(this.aliases.length) {
-
-    this.arrayMediums2.forEach(item => {
-      this.aliases.push(this.newMediumForm2(item));
-    });
-    // }
-
-
+    Object.keys(this.dataService.medios).forEach(uid => {
+      const medio = this.dataService.medios[uid]
+      this.aliases.push(this.newMediumForm({uid, item: medio}));
+    })
   }
-
-  // simulacionDeCambio (event) {
-  //   // console.log(event);
-  //   const ids: Array<number> = this.aliases.value.map(item => item.medio);
-  //   this.mediumsSelected = this.mediums.filter(medio => ids.includes(medio.id));
-  // }
 
   addMedium(): void {
-    // this.aliases.push(this.formBuilder.control(''));
-    // while (this.aliases.length) {
-    //   this.aliases.removeAt(0);
-    // }
+    const uid = (new Date()).getTime()
 
+    this.dataService.medios[uid] = {
+      uid: uid,
+      id: null,
+      name: "",
+      subName: "",
+      test: {},
+      resultado: []
+    }
 
-
-    // for (let i = 1; i <= this.dataService.mediumNumber; i++) {
-    //   console.log('entro aqui');
-
-    //   if (this.dataService.mediumNumber >= i) {
-    //     this.aliases.push(this.newMediumForm(this.dataService.mediums[i - 1]));
-    //   } else {
-    //     console.log('entro aqui');
-    //     this.aliases.push(this.newMediumForm());
-    //   }
-    // }
-    this.aliases.push(this.newMediumForm2());
-    console.log(this.mediumsForm.value);
+    this.aliases.push(this.newMediumForm({ uid }));
   }
+
   removeMedium() {
     this.aliases.removeAt(this.aliases.length - 1);
     // this.aliases.clear();
   }
 
-  // public onMediumValues(index: number, value: any) {
-  //   this.aliases.at(index).get('medio')?.setValue(value ? value.name : '');
-  // }
+  onSubnameChange(e, listItem) {
+    const subName = e.target.value;
+    const uid = listItem.value.uid;
 
-  // onChangeEventFunc(name: string, isChecked: any) {
-  //   const pruebas = (this.mediumsForm.controls['name'] as FormArray);
+    this.dataService.medios[uid].subName = subName;
+  }
 
-  //   if (isChecked['checked']) {
-  //     pruebas.push(new FormControl(name));
-  //   } else {
-  //     const index = pruebas.controls.findIndex(x => x.value === name);
-  //     pruebas.removeAt(index);
-  //   }
-  // }
-  onNext(valor: string) {
+  onMedioChange(medioId, listItem) {
+    const uid = listItem.value.uid;
 
-    this.dataService.mediums2 = this.mediumsSelected.map(item => ({
-      ...item,
-      uid: item.uid,
-      nameEdit: (this.dataService.mediums2.find(item3 => item3.id == item.id)?.nameEdit || ''),
-      tests: (this.dataService.mediums2.find(item2 => item2.id == item.id)?.tests || {}),
-    }));
+    const find = this.mediums.find(item => item.id == medioId);
 
-    // console.log("this.dataService.mediums2", this.dataService.mediums2);
+    this.dataService.medios[uid].id = medioId;
+    this.dataService.medios[uid].name = find?.name || '';
+  }
 
-
-    // .map(item => ({...item.medio, tests: []}));
-
-    // console.log(this.dataService.mediums);
-
-    this.dataService.mediumNumber = this.aliases.length
-    this.dataService.nombreMedio = valor;
+  checar() {
+    console.log("this.dataService.medios", this.dataService.medios);
+  }
+  onNext(medio: Medio) {
+    this.dataService.medioSelected = medio;
     this.router.navigateByUrl('/select');
-    // console.log(this.mediumsForm.value);
-    console.log(this.aliases.value);
-    console.log(this.mediumsSelected);
-
-
-
   }
 }

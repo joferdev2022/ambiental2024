@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { DataService } from 'src/app/shared/services/data.service';
 import { Default } from 'src/app/utils/default';
-import { checkBox } from '../../models/checkBox';
+import { checkBox } from '../../models/checkBox.model';
 
 @Component({
   selector: 'app-select-tests',
@@ -23,53 +23,37 @@ export class SelectTestsComponent implements OnInit {
   nombreModificado = '';
 
   chemicals: Array<checkBox> = Default.chemicals;
-  // chemicals: checkBox[] = [
-  //   { id: 0, name: 'Tom and Jerry' },
-  //   { id: 1, name: 'Rick and Morty' },
-  //   { id: 2, name: 'Ben 10' },
-  //   { id: 3, name: 'Batman: The Animated Series' }
-  // ];
   constructor(private formBuilder: FormBuilder,
     private dataService: DataService,
     private router: Router) {
+
+    const activeMedio = this.dataService.medioSelected;
+    console.log("activeMedio", activeMedio);
+    
     this.nuevoArray = this.dataService.mediums;
-    this.title = dataService.nombreMedio;
+    this.title = activeMedio?  `${activeMedio.name} - ${activeMedio.subName}`: '';
+    // this.title = "";
   }
 
   ngOnInit(): void {
     this.createCheckForm();
     console.log(this.nuevoArray[0]);
-
-
   }
-
-  crearSufijo() {
-    console.log(this.nombreModificado);
-
-  }
-
+  
   private createCheckForm() {
     this.checkForm = this.formBuilder.group({
       name: this.formBuilder.array([])
     });
   }
-
-
   onChangeEventFunc(name: string, isChecked: any) {
+   
+   
+    
     const pruebas = (this.checkForm.controls['name'] as FormArray);
 
     if (isChecked['checked']) {
       pruebas.push(new FormControl(name));
-    } else {
-      const index = pruebas.controls.findIndex(x => x.value === name);
-      pruebas.removeAt(index);
-    }
-  }
-  onChangeEventFunc2(name: string, isChecked: boolean) {
-    const pruebas = (this.checkForm.controls['name'] as FormArray);
-
-    if (isChecked) {
-      pruebas.push(new FormControl(name));
+      console.log(isChecked);
     } else {
       const index = pruebas.controls.findIndex(x => x.value === name);
       pruebas.removeAt(index);
@@ -80,16 +64,20 @@ export class SelectTestsComponent implements OnInit {
     this.dataService.chemicals = this.checkForm.value.name;
     const testsArray: Array<string> = this.checkForm.value.name;
 
-    const medioIdx = this.dataService.mediums2.findIndex(item => {
-      return item.name === this.title
-    });
-
-    this.dataService.mediums2[medioIdx].tests = testsArray.reduce((obj, test) => {
+    // const medioIdx = this.dataService.mediums2.findIndex(item => {
+    //   return item.name === this.title
+    // });
+    this.dataService.medioSelected.test = this.checkForm.value.name.reduce((obj,test) => {
       obj[test] = '';
-      return obj;
+      return obj
     }, {});
 
-    this.dataService.mediums2[medioIdx].nameEdit = this.nombreModificado;
+    // this.dataService.mediums2[medioIdx].tests = testsArray.reduce((obj, test) => {
+    //   obj[test] = '';
+    //   return obj;
+    // }, {});
+
+    // this.dataService.mediums2[medioIdx].nameEdit = this.nombreModificado;
 
     console.log(testsArray);
     console.log(this.checkForm.value);

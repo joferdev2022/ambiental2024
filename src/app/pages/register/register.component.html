@@ -1,12 +1,17 @@
+<div class="container">
+  
 
-<h1 class="text-center">Prueba: 001</h1>
+<h1 class="text-center mt-4 mb-4 title">
+  <i class="fa-regular fa-address-card"></i>
+  Análisis: 001
+</h1>
 <form *ngIf="labForm" role="form" novalidate [formGroup]="labForm" class="d-block">
     <mat-accordion class="example-headers-align" multi>
         <mat-expansion-panel [expanded]="true" class="">
             <mat-expansion-panel-header>
                 <mat-panel-title class="panel-title mt-0 text-justify">DATOS DEL ENCARGADO</mat-panel-title>
             </mat-expansion-panel-header>
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-6">
                     <mat-form-field class="full-width" appearance="legacy" color="primary">
                       <mat-label>Nombre</mat-label>
@@ -23,11 +28,11 @@
                   </div>
             </div>
         </mat-expansion-panel>
-        <mat-expansion-panel [expanded]="false" class="">
+        <mat-expansion-panel [expanded]="true" class="">
             <mat-expansion-panel-header>
                 <mat-panel-title class="panel-title mt-0 text-justify">DATOS DEL CLIENTE</mat-panel-title>
             </mat-expansion-panel-header>
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-6">
                     <mat-form-field class="full-width" appearance="legacy" color="primary">
                       <mat-label>DNI:</mat-label>
@@ -89,11 +94,11 @@
                   
             </div>
         </mat-expansion-panel>
-        <mat-expansion-panel [expanded]="false" class="">
+        <mat-expansion-panel [expanded]="true" class="">
             <mat-expansion-panel-header>
                 <mat-panel-title class="panel-title mt-0 text-justify">DATOS DE LA MUESTRA</mat-panel-title>
             </mat-expansion-panel-header>
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-6">
                     <mat-form-field class="full-width" appearance="legacy" color="primary">
                       <mat-label>Tipo:</mat-label>
@@ -139,7 +144,9 @@
         </mat-expansion-panel>
     </mat-accordion>
 </form>
-<div class="mt-4 text-center">
+<div class="mt-4 mb-4 text-center">
     <!-- <button type="button" mat-flat-button class="btn btn-lg" (click)="onSearch()">Continuar</button> -->
-    <button type="button" class="btn btn-success" (click)="onSearch()">Continuar</button>
+    <button type="button" class="btn btn-success btn-bio" (click)="onSearch()">Continuar</button>
+</div>
+
 </div>
